@@ -3,8 +3,9 @@ module.exports = (app) => {
     return app.db('users').select();
   };
 
-  const save = (user) => {
-    if (!user.name || !user.mail) return { error: 'Dados inválidos', status: 400 };
+  const save = async (user) => {
+    if (!user.name || !user.mail || !user.password) return { error: 'Dados inválidos', status: 400 };
+
     return app.db('users').insert(user, '*');
   };
 

@@ -37,3 +37,14 @@ test('Não deve inserir usuário sem e-mail', async () => {
   expect(result.status).toBe(400);
   expect(result.body.error).toBe('Dados inválidos');
 });
+
+test('Não deve inserir usuário sem senha', (done) => {
+  const mail = `${Date.now()}@email.com`;
+  request(app).post('/users')
+    .send({ name: 'Walter Mitty', mail })
+    .then((res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Dados inválidos');
+      done();
+    });
+});
