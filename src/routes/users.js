@@ -8,6 +8,7 @@ module.exports = (app) => {
     const result = await app.services.user.save(req.body);
 
     if (result.status === 400) return res.status(400).json(result);
+    if (result.status === 422) return res.status(422).json(result);
 
     return res.status(201).json(result[0]);
   };
