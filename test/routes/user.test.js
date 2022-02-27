@@ -20,3 +20,12 @@ test('Deve inserir usuário com sucesso', () => {
       expect(res.body.mail).toBe(mail);
     });
 });
+
+test('Não deve inserir usuário sem nome', () => {
+  return request(app).post('/users')
+    .send({ mail: 'mail@email.com', password: '123456' })
+    .then((res) => {
+      expect(res.body.error).toBe('Dados inválidos');
+      expect(res.status).toBe(400);
+    });
+});

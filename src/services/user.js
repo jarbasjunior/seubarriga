@@ -4,6 +4,7 @@ module.exports = (app) => {
   };
 
   const save = (user) => {
+    if (!user.name) return { error: 'Dados inválidos', status: 400 };
     return app.db('users').insert(user, '*');
   };
 
