@@ -76,6 +76,18 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
     - Execute o comando `npm i -S -E consign@0.1.6` para instalar as dependências do **Consign** na versão 0.1.6 sem atualização automática no futuro.
 
+* [Postgres](https://www.npmjs.com/package/postgres) - Como banco de dados relacional.
+
+  * ### Instalação do Postgres ⚙️
+
+    - Execute o comando `npm i -S -E pg@8.0.3` para instalar as dependências do **Postgres** na versão 8.0.3 sem atualização automática no futuro.
+  
+* [Knex](https://www.npmjs.com/package/knex) - Para *querys* SQL no Postgres.
+
+  * ### Instalação do Knex ⚙️
+
+    - Execute o comando `npm i -S -E knex@0.15.2` para instalar as dependências do **Knex** na versão 0.15.2 sem atualização automática no futuro.
+
 
 ## Opcionais recomendados: ⚒️
 
