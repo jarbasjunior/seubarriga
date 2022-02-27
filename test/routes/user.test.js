@@ -25,7 +25,15 @@ test('Não deve inserir usuário sem nome', () => {
   return request(app).post('/users')
     .send({ mail: 'mail@email.com', password: '123456' })
     .then((res) => {
-      expect(res.body.error).toBe('Dados inválidos');
       expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Dados inválidos');
     });
+});
+
+test('Não deve inserir usuário sem e-mail', async () => {
+  const result = await request(app).post('/users')
+    .send({ name: 'Walter Mitty', password: '123456' });
+
+  expect(result.status).toBe(400);
+  expect(result.body.error).toBe('Dados inválidos');
 });
