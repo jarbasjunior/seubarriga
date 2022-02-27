@@ -58,9 +58,24 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
 * [Supertest](https://www.npmjs.com/package/supertest) - Como módulo para realizar requisições HTTP para a API, além de assersações a nível de integração.
 
-  * ### Instalação do Supertest ⚙️
+    * ### Instalação do Supertest ⚙️
 
     - Execute o comando `npm i -D -E supertest@3.3.0` para instalar no ambiente de DEV as dependências do **Supertest** na versão 3.3.0 sem atualização automática no futuro.
+
+* [Body Parser](https://www.npmjs.com/package/body-parser) - Para analisar o corpo das requisições recebidas pela API e disponibilizá-las através da propriedade `req-body`.
+
+  * ### Instalação do Body Parser ⚙️
+
+    - Execute o comando `npm i -S -E body-parser@1.18.3` para instalar as dependências do **Body Parser** na versão 1.18.3 sem atualização automática no futuro.
+    
+      **OBS.** *Essa dependência está intergrada no Express a partir da versão 4.16.0, ou seja, não precisará ser instalado separadamente.*
+
+* [Consign](https://www.npmjs.com/package/consign) - Para gerenciamento e carregamento de arquivos na aplicação.
+
+  * ### Instalação do Consign ⚙️
+
+    - Execute o comando `npm i -S -E consign@0.1.6` para instalar as dependências do **Consign** na versão 0.1.6 sem atualização automática no futuro.
+
 
 ## Opcionais recomendados: ⚒️
 
