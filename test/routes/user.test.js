@@ -1,9 +1,9 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
-const mail = `${Date.now()}@email.com`;
-
-test('Deve listar todos os usuários', () => {
+test('Deve listar todos os usuários', async () => {
+  const user = { name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' };
+  await request(app).post('/users').send(user);
   return request(app).get('/users')
     .then((res) => {
       expect(res.status).toBe(200);
@@ -12,12 +12,13 @@ test('Deve listar todos os usuários', () => {
 });
 
 test('Deve inserir usuário com sucesso', () => {
+  const user = { name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' };
   return request(app).post('/users')
-    .send({ name: 'Walter Mitty', mail, password: '123456' })
+    .send(user)
     .then((res) => {
       expect(res.status).toBe(201);
       expect(res.body.name).toBe('Walter Mitty');
-      expect(res.body.mail).toBe(mail);
+      expect(res.body.mail).toBe(user.mail);
     });
 });
 
@@ -40,7 +41,7 @@ test('Não deve inserir usuário sem e-mail', async () => {
 
 test('Não deve inserir usuário sem senha', (done) => {
   request(app).post('/users')
-    .send({ name: 'Walter Mitty', mail })
+    .send({ name: 'Walter Mitty', mail: `${Date.now()}@email.com` })
     .then((res) => {
       expect(res.status).toBe(400);
       expect(res.body.error).toBe('Dados inválidos');
