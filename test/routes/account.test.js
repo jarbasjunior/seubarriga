@@ -21,6 +21,15 @@ test('Deve inserir uma conta com sucesso', () => {
     });
 });
 
+test('Não deve inserir uma conta sem nome', () => {
+  return request(app).post(MAIN_ROUTE)
+    .send({ user_id: user.id })
+    .then((result) => {
+      expect(result.status).toBe(400);
+      expect(result.body.error).toBe('Dados inválidos');
+    });
+});
+
 test('Deve listar todas as contas', () => {
   const body = { user_id: user.id, name: 'Account list' };
   return app.db('accounts').insert(body)
