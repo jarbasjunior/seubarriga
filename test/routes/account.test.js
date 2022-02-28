@@ -53,3 +53,12 @@ test('Deve alterar uma conta', () => {
       expect(result.body.name).toBe(newName);
     });
 });
+
+test('Deve remover uma conta', () => {
+  const body = { user_id: user.id, name: 'Account to Remove' };
+  return app.db('accounts').insert(body, ['id'])
+    .then((acc) => request(app).delete(`${MAIN_ROUTE}/${acc[0].id}`))
+    .then((result) => {
+      expect(result.status).toBe(204);
+    });
+});
