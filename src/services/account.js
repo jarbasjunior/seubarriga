@@ -13,9 +13,17 @@ module.exports = (app) => {
       .update(body, '*');
   };
 
+  const remove = (id) => {
+    return app.db('accounts')
+      .where({ id })
+      .del();
+  };
+
   const save = async (account) => {
     return app.db('accounts').insert(account, '*');
   };
 
-  return { findAll, read, update, save };
+  return {
+    findAll, read, update, save, remove,
+  };
 };
