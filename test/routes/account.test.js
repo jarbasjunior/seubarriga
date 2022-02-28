@@ -41,3 +41,15 @@ test('Deve retornar uma conta por Id', () => {
       expect(result.body.name).toBe(body.name);
     });
 });
+
+test('Deve alterar uma conta', () => {
+  const newName = 'Account Updated';
+  const body = { user_id: user.id, name: 'Account Update' };
+  return app.db('accounts').insert(body, ['id'])
+    .then((acc) => request(app).put(`${MAIN_ROUTE}/${acc[0].id}`)
+      .send({ name: newName }))
+    .then((result) => {
+      expect(result.status).toBe(200);
+      expect(result.body.name).toBe(newName);
+    });
+});
