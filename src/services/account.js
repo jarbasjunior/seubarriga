@@ -3,9 +3,13 @@ module.exports = (app) => {
     return app.db('accounts').select();
   };
 
+  const find = (filter = {}) => {
+    return app.db('accounts').where(filter).first();
+  };
+
   const save = async (account) => {
     return app.db('accounts').insert(account, '*');
   };
 
-  return { findAll, save };
+  return { findAll, find, save };
 };
