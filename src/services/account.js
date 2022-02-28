@@ -3,13 +3,19 @@ module.exports = (app) => {
     return app.db('accounts').select();
   };
 
-  const find = (filter = {}) => {
+  const read = (filter = {}) => {
     return app.db('accounts').where(filter).first();
+  };
+
+  const update = (id, body) => {
+    return app.db('accounts')
+      .where({ id })
+      .update(body, '*');
   };
 
   const save = async (account) => {
     return app.db('accounts').insert(account, '*');
   };
 
-  return { findAll, find, save };
+  return { findAll, read, update, save };
 };
