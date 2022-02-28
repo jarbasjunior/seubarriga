@@ -5,29 +5,38 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 ---
 
 ## Índice: 📋
-- [Requisitos](#-requisitos)
-  - [Node.js e NPM](#-node.js-e-npm)
-  - [Express](#-express)
-  - [Jest](#-jest)
-  - [Supertest](#-supertest)
-- [Opcionais recomendados](#-opcionais-recomendados)
-  - [Eslint plugin](#-eslint-plugin)
-  - [eslint](#-eslint)
+- [Requisitos](#requisitos)
+
+  - [Node.js e NPM](#nodejs-e-npm)
+
+- [Pacotes utilizados](#pacotes-utilizados)
+
+  - [Express](#express)
+  - [Jest](#jest)
+  - [Supertest](#supertest)
+  - [eslint](#eslint)
+  - [Eslint plugin](#eslint-plugin)
+  - [Body Parser](#body-parser)
+  - [Consign](#consign)
+  - [Postgres](#postgres)
+  - [Knex](#knex)
 
 ---
 
-## Requisitos: ❗
+## <a id="requisitos"/> Requisitos: ❗
 
-* [Node.js e NPM](https://nodejs.org/en/download) - Node.js como ambiente de execução para criar e executar aplicações em Javascript. E o NPM para: instalação de pacotes, gerenciamento de versões e dependências.
+* <a id="nodejs-e-npm"/> [Node.js e NPM](https://nodejs.org/en/download) - Node.js como ambiente de execução para criar e executar aplicações em Javascript. E o NPM para: instalação de pacotes, gerenciamento de versões e dependências.
 
-* [Express](https://www.npmjs.com/package/express) - Como servidor para a API.
+## <a id="pacotes-utilizados"/> Pacotes utilizados: 📦 📚
+
+* <a id="express"/> [Express](https://www.npmjs.com/package/express) - Como servidor para a API.
 
   * ### Instalação do Express ⚙️
 
     - Execute o comando `npm i -S -E express@4.16.4` para instalar as dependências do **Express** na versão 4.16.0 sem atualização automática no futuro.
 
 
-* [Jest](https://www.npmjs.com/package/jest) - Para criação de testes de API REST
+* <a id="jest"/> [Jest](https://www.npmjs.com/package/jest) - Para criação de testes de API REST.
 
   * ### Instalação do Jest ⚙️
 
@@ -56,43 +65,13 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
     - Execute o comando `npm test` para verificar a eecução do Jest.
 
-* [Supertest](https://www.npmjs.com/package/supertest) - Como módulo para realizar requisições HTTP para a API, além de assersações a nível de integração.
+* <a id="supertest"/> [Supertest](https://www.npmjs.com/package/supertest) - Como módulo para realizar requisições HTTP para a API, além de assersações a nível de integração.
 
     * ### Instalação do Supertest ⚙️
 
     - Execute o comando `npm i -D -E supertest@3.3.0` para instalar no ambiente de DEV as dependências do **Supertest** na versão 3.3.0 sem atualização automática no futuro.
 
-* [Body Parser](https://www.npmjs.com/package/body-parser) - Para analisar o corpo das requisições recebidas pela API e disponibilizá-las através da propriedade `req-body`.
-
-  * ### Instalação do Body Parser ⚙️
-
-    - Execute o comando `npm i -S -E body-parser@1.18.3` para instalar as dependências do **Body Parser** na versão 1.18.3 sem atualização automática no futuro.
-    
-      **OBS.** *Essa dependência está intergrada no Express a partir da versão 4.16.0, ou seja, não precisará ser instalado separadamente.*
-
-* [Consign](https://www.npmjs.com/package/consign) - Para gerenciamento e carregamento de arquivos na aplicação.
-
-  * ### Instalação do Consign ⚙️
-
-    - Execute o comando `npm i -S -E consign@0.1.6` para instalar as dependências do **Consign** na versão 0.1.6 sem atualização automática no futuro.
-
-* [Postgres](https://www.npmjs.com/package/postgres) - Como banco de dados relacional.
-
-  * ### Instalação do Postgres ⚙️
-
-    - Execute o comando `npm i -S -E pg@8.0.3` para instalar as dependências do **Postgres** na versão 8.0.3 sem atualização automática no futuro.
-  
-* [Knex](https://www.npmjs.com/package/knex) - Para *querys* SQL no Postgres.
-
-  * ### Instalação do Knex ⚙️
-
-    - Execute o comando `npm i -S -E knex@0.15.2` para instalar as dependências do **Knex** na versão 0.15.2 sem atualização automática no futuro.
-
-
-## Opcionais recomendados: ⚒️
-
-* [Eslint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-* [eslint](https://www.npmjs.com/package/eslint)
+* <a id="eslint"/> [eslint](https://www.npmjs.com/package/eslint)
 
   * ### Instalação eslint ⚙️
 
@@ -116,5 +95,32 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
     - Abra o arquivo `.eslintrc.json` e adicione dentro da chave `rules` a outra chave `"no-console": "off"`, para que o lint não reclame do comando `console.log();`, pois durante o desenvolvimento ele poderá ser utilizado com frequencia.
 
-    - Por fim, no arquivo `package.json`, adicione na chave `scripts`, o novo script: `"lint": "eslint test/** src/** --fix"`. Desta forma, quando for executado na raiz do projeto o comando `npm run lint`, serão corrigidas as infrações que o eslint considera como autocorrigível de acordo com o *guide* Airbnb que foi configurado anteriomente. 
+    - Por fim, no arquivo `package.json`, adicione na chave `scripts`, o novo script: `"lint": "eslint test/** src/** --fix"`. Desta forma, quando for executado na raiz do projeto o comando `npm run lint`, serão corrigidas as infrações que o eslint considera como autocorrigível de acordo com o *guide* Airbnb que foi configurado anteriomente.
 
+* <a id="eslint-plugin"/> [Eslint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) - Plugin do eslint para o VSCode.
+
+* <a id="body-parser"/> [Body Parser](https://www.npmjs.com/package/body-parser) - Para analisar o corpo das requisições recebidas pela API e disponibilizá-las através da propriedade `req-body`.
+
+  * ### Instalação do Body Parser ⚙️
+
+    - Execute o comando `npm i -S -E body-parser@1.18.3` para instalar as dependências do **Body Parser** na versão 1.18.3 sem atualização automática no futuro.
+    
+      **OBS.** *Essa dependência está intergrada no Express a partir da versão 4.16.0, ou seja, não precisará ser instalado separadamente.*
+
+* <a id="consign"/> [Consign](https://www.npmjs.com/package/consign) - Para gerenciamento e carregamento de arquivos na aplicação.
+
+  * ### Instalação do Consign ⚙️
+
+    - Execute o comando `npm i -S -E consign@0.1.6` para instalar as dependências do **Consign** na versão 0.1.6 sem atualização automática no futuro.
+
+* <a id="postgres"/> [Postgres](https://www.npmjs.com/package/postgres) - Como banco de dados relacional.
+
+  * ### Instalação do Postgres ⚙️
+
+    - Execute o comando `npm i -S -E pg@8.0.3` para instalar as dependências do **Postgres** na versão 8.0.3 sem atualização automática no futuro.
+  
+* <a id="knex"/> [Knex](https://www.npmjs.com/package/knex) - Para *querys* SQL no Postgres.
+
+  * ### Instalação do Knex ⚙️
+
+    - Execute o comando `npm i -S -E knex@0.15.2` para instalar as dependências do **Knex** na versão 0.15.2 sem atualização automática no futuro.
