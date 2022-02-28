@@ -20,6 +20,7 @@ module.exports = (app) => {
   };
 
   const save = async (account) => {
+    if (!account.name) return { error: 'Dados inválidos', status: 400 };
     return app.db('accounts').insert(account, '*');
   };
 
