@@ -17,4 +17,13 @@ app.get('/', (req, res) => {
   res.status(200).send();
 });
 
+app.use((err, req, res, next) => {
+  const {
+    name, message, status, stack,
+  } = err;
+  if (name === 'ValidationError') res.status(status).json({ error: message });
+  else res.status(500).json({ name, message, stack });
+  next(err);
+});
+
 module.exports = app;
