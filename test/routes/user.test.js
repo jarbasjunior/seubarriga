@@ -19,6 +19,7 @@ test('Deve inserir usuário com sucesso', () => {
       expect(res.status).toBe(201);
       expect(res.body.name).toBe('Walter Mitty');
       expect(res.body.mail).toBe(user.mail);
+      expect(res.body).not.toHaveProperty('password');
     });
 });
 
@@ -47,6 +48,18 @@ test('Não deve inserir usuário sem senha', (done) => {
       expect(res.body.error).toBe('Dados inválidos');
       done();
     });
+});
+
+test('Deve armazenar senha criptografada', async () => {
+  const result = await request(app).post('/users')
+    .send({ name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' });
+
+  expect(result.status).toBe(201);
+
+  const { id } = result.body;
+  const userDB = await app.services.user.findOne({ id });
+  expect(userDB.password).not.toBeUndefined();
+  expect(userDB.password).not.toBe('123456');
 });
 
 test('Não deve inserir usuário com e-mail existente', async () => {
