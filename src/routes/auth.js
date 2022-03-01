@@ -8,6 +8,7 @@ module.exports = (app) => {
   const signin = (req, res, next) => {
     app.services.user.findOne({ mail: req.body.mail })
       .then((user) => {
+        if (!user) throw new ValidationError({ message: 'Acesso negado! Usuário e/ou senha inválidos.', status: 401 });
         if (bcrypt.compareSync(req.body.password, user.password)) {
           const payload = {
             id: user.id,
