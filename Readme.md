@@ -20,6 +20,7 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   - [Consign](#consign)
   - [Postgres](#postgres)
   - [Knex](#knex)
+  - [Bcrypt](#bcrypt)
 
 ---
 
@@ -124,3 +125,9 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   * ### Instalação do Knex ⚙️
 
     - Execute o comando `npm i -S -E knex@0.15.2` para instalar as dependências do **Knex** na versão 0.15.2 sem atualização automática no futuro.
+    
+* <a id="bcrypt"/> [Bcrypt](https://www.npmjs.com/package/bcrypt-nodejs) - Para encriptação de senhas.
+
+  * ### Instalação do Bcrypt ⚙️
+
+    - Execute o comando `npm i -S -E bcrypt-nodejs@0.0.3` para instalar as dependências do **Bcrypt** no ambiente de desenvolvimento, na versão 0.0.3 sem atualização automática no futuro.
