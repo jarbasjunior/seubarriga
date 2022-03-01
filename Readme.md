@@ -21,6 +21,7 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   - [Postgres](#postgres)
   - [Knex](#knex)
   - [Bcrypt](#bcrypt)
+  - [JWT](#jwt)
 
 ---
 
@@ -131,3 +132,9 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   * ### Instalação do Bcrypt ⚙️
 
     - Execute o comando `npm i -S -E bcrypt-nodejs@0.0.3` para instalar as dependências do **Bcrypt** no ambiente de desenvolvimento, na versão 0.0.3 sem atualização automática no futuro.
+
+* <a id="jwt"/> [JWT Simple](https://www.npmjs.com/package/jwt-simple) - Para encode de tokens JWT.
+
+  * ### Instalação do JWT Simple ⚙️
+
+    - Execute o comando `npm i -S -E jwt-simple@0.5.5` para instalar as dependências do **JWT Simple** no ambiente de desenvolvimento, na versão 0.5.5 sem atualização automática no futuro.
