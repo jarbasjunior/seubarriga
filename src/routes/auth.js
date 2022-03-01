@@ -6,6 +6,7 @@ const secret = 'Segredo!';
 
 module.exports = (app) => {
   const signin = (req, res, next) => {
+    if (!req.body.password) throw new ValidationError({ message: 'Dados inválidos', status: 400 });
     app.services.user.findOne({ mail: req.body.mail })
       .then((user) => {
         if (!user) throw new ValidationError({ message: 'Acesso negado! Usuário e/ou senha inválidos.', status: 401 });
