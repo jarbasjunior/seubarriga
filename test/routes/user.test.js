@@ -1,10 +1,12 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
+const MAIN_ROUTE = '/users';
+
 test('Deve listar todos os usuários', async () => {
   const user = { name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' };
-  await request(app).post('/users').send(user);
-  return request(app).get('/users')
+  await request(app).post(MAIN_ROUTE).send(user);
+  return request(app).get(MAIN_ROUTE)
     .then((res) => {
       expect(res.status).toBe(200);
       expect(res.body.length).toBeGreaterThan(0);
@@ -13,7 +15,7 @@ test('Deve listar todos os usuários', async () => {
 
 test('Deve inserir usuário com sucesso', () => {
   const user = { name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' };
-  return request(app).post('/users')
+  return request(app).post(MAIN_ROUTE)
     .send(user)
     .then((res) => {
       expect(res.status).toBe(201);
@@ -24,7 +26,7 @@ test('Deve inserir usuário com sucesso', () => {
 });
 
 test('Não deve inserir usuário sem nome', () => {
-  return request(app).post('/users')
+  return request(app).post(MAIN_ROUTE)
     .send({ mail: 'mail@email.com', password: '123456' })
     .then((res) => {
       expect(res.status).toBe(400);
@@ -33,7 +35,7 @@ test('Não deve inserir usuário sem nome', () => {
 });
 
 test('Não deve inserir usuário sem e-mail', async () => {
-  const result = await request(app).post('/users')
+  const result = await request(app).post(MAIN_ROUTE)
     .send({ name: 'Walter Mitty', password: '123456' });
 
   expect(result.status).toBe(400);
@@ -41,7 +43,7 @@ test('Não deve inserir usuário sem e-mail', async () => {
 });
 
 test('Não deve inserir usuário sem senha', (done) => {
-  request(app).post('/users')
+  request(app).post(MAIN_ROUTE)
     .send({ name: 'Walter Mitty', mail: `${Date.now()}@email.com` })
     .then((res) => {
       expect(res.status).toBe(400);
@@ -51,7 +53,7 @@ test('Não deve inserir usuário sem senha', (done) => {
 });
 
 test('Deve armazenar senha criptografada', async () => {
-  const result = await request(app).post('/users')
+  const result = await request(app).post(MAIN_ROUTE)
     .send({ name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' });
 
   expect(result.status).toBe(201);
@@ -65,9 +67,9 @@ test('Deve armazenar senha criptografada', async () => {
 test('Não deve inserir usuário com e-mail existente', async () => {
   const user = { name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' };
   const newUser = { name: 'Walter Mitty Dois', mail: user.mail, password: '654321' };
-  await request(app).post('/users').send(user);
+  await request(app).post(MAIN_ROUTE).send(user);
 
-  return request(app).post('/users')
+  return request(app).post(MAIN_ROUTE)
     .send(newUser)
     .then((res) => {
       expect(res.status).toBe(422);
