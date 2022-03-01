@@ -7,6 +7,9 @@ module.exports = (app) => {
   };
 
   const findOne = (filter = {}) => {
+    if (((Object.keys(filter)[0] === 'mail') && !filter.mail) || ((Object.keys(filter)[0] === 'id') && !filter.id)) {
+      throw new ValidationError({ message: 'Dados inválidos', status: 400 });
+    }
     return app.db('users').where(filter).first();
   };
 
