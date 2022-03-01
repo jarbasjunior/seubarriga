@@ -1,5 +1,6 @@
 const jwt = require('jwt-simple');
 const bcrypt = require('bcrypt-nodejs');
+const ValidationError = require('../errors/ValidationError');
 
 const secret = 'Segredo!';
 
@@ -15,7 +16,7 @@ module.exports = (app) => {
           };
           const token = jwt.encode(payload, secret);
           res.status(200).json({ token });
-        }
+        } else throw new ValidationError({ message: 'Acesso negado! Usuário e/ou senha inválidos.', status: 401 });
       }).catch((err) => next(err));
   };
 
