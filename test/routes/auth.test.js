@@ -44,3 +44,12 @@ test('Não deve autenticar sem enviar e-mail', () => {
       expect(res.body.error).toBe('Dados inválidos');
     });
 });
+
+test('Não deve autenticar sem enviar senha', () => {
+  return request(app).post('/auth/signin')
+    .send({ mail: `${Date.now()}@email.com` })
+    .then((res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Dados inválidos');
+    });
+});
