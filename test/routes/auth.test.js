@@ -35,3 +35,12 @@ test('Não deve autenticar com e-mail inválido', () => {
       expect(res.body.error).toBe('Acesso negado! Usuário e/ou senha inválidos.');
     });
 });
+
+test('Não deve autenticar sem enviar e-mail', () => {
+  return request(app).post('/auth/signin')
+    .send({ password: '123456' })
+    .then((res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Dados inválidos');
+    });
+});
