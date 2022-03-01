@@ -13,3 +13,15 @@ test('Deve receber token ao se autenticar', () => {
       expect(res.body.token).not.toBeNull();
     });
 });
+
+test('Não deve autenticar com senha inválido', () => {
+  const user = { name: 'Walter', mail: `${Date.now()}@email.com`, password: '123456' };
+  return app.services.user.save(user)
+    .then(() => request(app).post('/auth/signin')
+      .send({ mail: user.mail, password: '654321' }))
+    .then((res) => {
+      expect(res.status).toBe(401);
+      expect(res.body.token).not.toBeNull();
+      expect(res.body.error).toBe('Acesso negado! Usuário e/ou senha inválidos.');
+    });
+});
