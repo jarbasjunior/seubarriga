@@ -76,3 +76,10 @@ test('Não deve inserir usuário com e-mail existente', async () => {
       expect(res.body.error).toBe('E-mail já cadastrado');
     });
 });
+
+test('Não deve acessar a rota de usuários sem token', () => {
+  return request(app).get(MAIN_ROUTE)
+    .then((result) => {
+      expect(result.status).toBe(401);
+    });
+});
