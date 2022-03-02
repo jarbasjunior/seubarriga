@@ -1,13 +1,15 @@
 const request = require('supertest');
-
+const jwt = require('jwt-simple');
 const app = require('../../src/app');
 
 const MAIN_ROUTE = '/accounts';
+
 let user;
 
 beforeAll(async () => {
   const res = await app.services.user.save({ name: 'User Account', mail: `${Date.now()}@email.com`, password: '123456' });
   user = { ...res[0] };
+  user.token = jwt.encode(user, 'Segredo!');
 });
 
 test('Deve inserir uma conta com sucesso', () => {
@@ -15,6 +17,7 @@ test('Deve inserir uma conta com sucesso', () => {
   const body = { user_id: user.id, name: `Account ${number}` };
   return request(app).post(MAIN_ROUTE)
     .send(body)
+    .set('authorization', `bearer ${user.token}`)
     .then((result) => {
       expect(result.status).toBe(201);
       expect(result.body.name).toBe(body.name);
@@ -24,6 +27,7 @@ test('Deve inserir uma conta com sucesso', () => {
 test('Não deve inserir uma conta sem nome', () => {
   return request(app).post(MAIN_ROUTE)
     .send({ user_id: user.id })
+    .set('authorization', `bearer ${user.token}`)
     .then((result) => {
       expect(result.status).toBe(400);
       expect(result.body.error).toBe('Dados inválidos');
@@ -33,7 +37,8 @@ test('Não deve inserir uma conta sem nome', () => {
 test('Deve listar todas as contas', () => {
   const body = { user_id: user.id, name: 'Account list' };
   return app.db('accounts').insert(body)
-    .then(() => request(app).get(MAIN_ROUTE))
+    .then(() => request(app).get(MAIN_ROUTE)
+      .set('authorization', `bearer ${user.token}`))
     .then((result) => {
       expect(result.status).toBe(200);
       expect(result.body.length).toBeGreaterThan(0);
@@ -43,7 +48,8 @@ test('Deve listar todas as contas', () => {
 test('Deve retornar uma conta por Id', () => {
   const body = { user_id: user.id, name: 'Account by Id' };
   return app.db('accounts').insert(body, ['id'])
-    .then((acc) => request(app).get(`${MAIN_ROUTE}/${acc[0].id}`))
+    .then((acc) => request(app).get(`${MAIN_ROUTE}/${acc[0].id}`)
+      .set('authorization', `bearer ${user.token}`))
     .then((result) => {
       expect(result.status).toBe(200);
       expect(result.body.user_id).toBe(body.user_id);
@@ -56,7 +62,8 @@ test('Deve alterar uma conta', () => {
   const body = { user_id: user.id, name: 'Account Update' };
   return app.db('accounts').insert(body, ['id'])
     .then((acc) => request(app).put(`${MAIN_ROUTE}/${acc[0].id}`)
-      .send({ name: newName }))
+      .send({ name: newName })
+      .set('authorization', `bearer ${user.token}`))
     .then((result) => {
       expect(result.status).toBe(200);
       expect(result.body.name).toBe(newName);
@@ -66,7 +73,8 @@ test('Deve alterar uma conta', () => {
 test('Deve remover uma conta', () => {
   const body = { user_id: user.id, name: 'Account to Remove' };
   return app.db('accounts').insert(body, ['id'])
-    .then((acc) => request(app).delete(`${MAIN_ROUTE}/${acc[0].id}`))
+    .then((acc) => request(app).delete(`${MAIN_ROUTE}/${acc[0].id}`)
+      .set('authorization', `bearer ${user.token}`))
     .then((result) => {
       expect(result.status).toBe(204);
     });
