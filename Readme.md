@@ -22,6 +22,8 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   - [Knex](#knex)
   - [Bcrypt](#bcrypt)
   - [JWT](#jwt)
+  - [Passport](#passport)
+  - [Passport JWT](#passport-jwt)
 
 ---
 
@@ -138,3 +140,15 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   * ### Instalação do JWT Simple ⚙️
 
     - Execute o comando `npm i -S -E jwt-simple@0.5.5` para instalar as dependências do **JWT Simple** no ambiente de desenvolvimento, na versão 0.5.5 sem atualização automática no futuro.
+
+* <a id="passport"/> [Passport](https://www.npmjs.com/package/passport) - Como middleware de autenticação.
+
+  * ### Instalação do Passport ⚙️
+
+    - Execute o comando `npm i -S -E passport@0.4.0` para instalar as dependências do **Passport** no ambiente de desenvolvimento, na versão 0.4.0 sem atualização automática no futuro.
+
+* <a id="passport-jwt"/> [Passport JWT](https://www.npmjs.com/package/passport-jwt) - Para autenticação com tokens JWT.
+
+  * ### Instalação do Passport JWT ⚙️
+
+    - Execute o comando `npm i -S -E passport-jwt@4.0.0` para instalar as dependências do **Passport JWT** no ambiente de desenvolvimento, na versão 4.0.0 sem atualização automática no futuro.
