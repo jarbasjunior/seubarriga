@@ -118,3 +118,13 @@ test('Deve remover uma conta', () => {
       expect(result.status).toBe(204);
     });
 });
+
+test('Não deve remover conta de outro usuário', () => {
+  return app.db('accounts').insert({ name: 'Conta usuário', user_id: user.id }, ['id'])
+    .then((acc) => request(app).delete(`${MAIN_ROUTE}/${acc[0].id}`)
+      .set('authorization', `bearer ${user2.token}`)
+      .then((result) => {
+        expect(result.status).toBe(403);
+        expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
+      }));
+});
