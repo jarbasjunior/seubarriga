@@ -15,5 +15,9 @@ module.exports = (app) => {
     return app.db('transactions').insert(transaction, '*');
   };
 
-  return { read, findOne, create };
+  const update = (id, transaction) => {
+    return app.db('transactions').where({ id }).update(transaction, '*');
+  };
+
+  return { read, findOne, create, update };
 };
