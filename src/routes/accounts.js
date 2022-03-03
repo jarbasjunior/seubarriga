@@ -1,7 +1,17 @@
 const express = require('express');
 
+const ValidationError = require('../errors/ValidationError');
+
 module.exports = (app) => {
   const router = express.Router();
+
+  router.param('id', (req, res, next) => {
+    app.services.account.read({ id: req.params.id })
+      .then((acc) => {
+        if (acc.user_id !== req.user.id) throw new ValidationError({ message: 'Recurso não está disponível para este usuário!', status: 403 });
+        else next();
+      }).catch((err) => next(err));
+  });
 
   router.get('/', (req, res, next) => {
     app.services.account.findAll(req.user.id)
@@ -18,10 +28,7 @@ module.exports = (app) => {
 
   router.get('/:id', (req, res, next) => {
     app.services.account.read({ id: req.params.id })
-      .then((result) => {
-        if (result.user_id !== req.user.id) return res.status(403).json({ error: 'Recurso não está disponível para este usuário!' });
-        return res.status(200).json(result);
-      })
+      .then((result) => res.status(200).json(result))
       .catch((err) => next(err));
   });
 
