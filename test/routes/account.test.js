@@ -29,6 +29,17 @@ test('Deve inserir uma conta com sucesso', () => {
     });
 });
 
+test('Não deve inserir uma conta de nome duplicado para o mesmo usuário', () => {
+  return app.db('accounts').insert({ name: 'Conta duplicada', user_id: user.id })
+    .then(() => request(app).post(MAIN_ROUTE)
+      .set('authorization', `bearer ${user.token}`)
+      .send({ name: 'Conta duplicada' })
+      .then((result) => {
+        expect(result.status).toBe(422);
+        expect(result.body.error).toBe('Já existe uma conta com esse nome!');
+      }));
+});
+
 test('Não deve inserir uma conta sem nome', () => {
   return request(app).post(MAIN_ROUTE)
     .send({})
