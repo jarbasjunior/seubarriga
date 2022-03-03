@@ -75,6 +75,16 @@ test('Deve retornar uma conta por Id', () => {
     });
 });
 
+test('Não deve retornar uma conta de outro usuário', () => {
+  return app.db('accounts').insert({ name: 'Conta usuário #2', user_id: user.id }, ['id'])
+    .then((acc) => request(app).get(`${MAIN_ROUTE}/${acc[0].id}`)
+      .set('authorization', `bearer ${user2.token}`)
+      .then((result) => {
+        expect(result.status).toBe(403);
+        expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
+      }));
+});
+
 test('Deve alterar uma conta', () => {
   const newName = 'Account Updated';
   const body = { user_id: user.id, name: 'Account Update' };
