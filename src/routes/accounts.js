@@ -4,7 +4,7 @@ module.exports = (app) => {
   const router = express.Router();
 
   router.get('/', (req, res, next) => {
-    app.services.account.findAll()
+    app.services.account.findAll(req.user.id)
       .then((result) => res.status(200).json(result))
       .catch((err) => next(err));
   });
