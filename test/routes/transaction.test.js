@@ -63,3 +63,16 @@ test('Deve retornar uma transação por ID', () => {
         expect(result.body.description).toBe('T ID');
       }));
 });
+
+test('Deve alterar uma transação', () => {
+  return app.db('transactions')
+    .insert({ description: 'To update', date: new Date(), ammount: 143.03, type: 'I', account_id: accUser.id }, ['id'])
+    .then((res) => request(app).put(`${MAIN_ROUTE}/${res[0].id}`)
+      .set('authorization', `bearer ${user.token}`)
+      .send({ description: 'Transaction updated' })
+      .then((result) => {
+        expect(result.status).toBe(200);
+        expect(result.body.id).toBe(res[0].id);
+        expect(result.body.description).toBe('Transaction updated');
+      }));
+});
