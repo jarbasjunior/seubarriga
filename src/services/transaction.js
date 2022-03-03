@@ -7,5 +7,9 @@ module.exports = (app) => {
       .select();
   };
 
-  return { read };
+  const create = (transaction) => {
+    return app.db('transactions').insert(transaction, '*');
+  };
+
+  return { read, create };
 };
