@@ -11,7 +11,7 @@ test('Deve criar usuário via signup', () => {
       expect(result.body.name).toBe(user.name);
       expect(result.body.mail).toBe(user.mail);
       expect(result.body).not.toHaveProperty('password');
-    })
+    });
 });
 
 test('Deve receber token ao se autenticar', () => {
