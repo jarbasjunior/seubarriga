@@ -76,7 +76,7 @@ test('Deve retornar uma conta por Id', () => {
 });
 
 test('Não deve retornar uma conta de outro usuário', () => {
-  return app.db('accounts').insert({ name: 'Conta usuário #2', user_id: user.id }, ['id'])
+  return app.db('accounts').insert({ name: 'Conta usuário', user_id: user.id }, ['id'])
     .then((acc) => request(app).get(`${MAIN_ROUTE}/${acc[0].id}`)
       .set('authorization', `bearer ${user2.token}`)
       .then((result) => {
@@ -96,6 +96,17 @@ test('Deve alterar uma conta', () => {
       expect(result.status).toBe(200);
       expect(result.body.name).toBe(newName);
     });
+});
+
+test('Não deve alterar conta de outro usuário', () => {
+  return app.db('accounts').insert({ name: 'Conta usuário', user_id: user.id }, ['id'])
+    .then((acc) => request(app).put(`${MAIN_ROUTE}/${acc[0].id}`)
+      .set('authorization', `bearer ${user2.token}`)
+      .send({ name: 'Novo nome da conta' })
+      .then((result) => {
+        expect(result.status).toBe(403);
+        expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
+      }));
 });
 
 test('Deve remover uma conta', () => {
