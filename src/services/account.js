@@ -30,7 +30,5 @@ module.exports = (app) => {
     return app.db('accounts').insert(account, '*');
   };
 
-  return {
-    findAll, read, update, save, remove,
-  };
+  return { findAll, read, update, save, remove };
 };
