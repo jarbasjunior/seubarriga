@@ -31,7 +31,7 @@ beforeAll(async () => {
 });
 
 test('Deve listar apenas as transações do usuário', () => {
-  const transaction1 = { description: 'T1', date: '2022-03-03T03:00:00.000Z', ammount: 100.03, type: 'I', account_id: accUser.id };
+  const transaction1 = { description: 'T1', date: new Date(), ammount: 100.03, type: 'I', account_id: accUser.id };
   const transaction2 = { description: 'T2', date: new Date(), ammount: 400, type: 'O', account_id: accUser2.id };
   return app.db('transactions').insert([transaction1, transaction2]).then(() => request(app).get(MAIN_ROUTE)
     .set('authorization', `bearer ${user.token}`)
@@ -40,4 +40,14 @@ test('Deve listar apenas as transações do usuário', () => {
       expect(result.body).toHaveLength(1);
       expect(result.body[0].description).toBe(transaction1.description);
     }));
+});
+
+test('Deve inserir transação com sucesso', () => {
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send({ description: 'T1', date: new Date(), ammount: 100.03, type: 'I', account_id: accUser.id })
+    .then((result) => {
+      expect(result.status).toBe(201);
+      expect(result.body.account_id).toBe(accUser.id);
+    });
 });
