@@ -79,7 +79,7 @@ test('Transações de saída devem ser negativas', () => {
     });
 });
 
-describe('Ao tentar inserir uma transação com campos obrigatórios ausentes', () => {
+describe('Ao tentar inserir uma transação com campos obrigatórios ausentes, não deve:', () => {
   let validTransaction;
   beforeEach(() => {
     validTransaction = { description: 'T without required fields', date: new Date(), ammount: 200.00, type: 'I', account_id: accUser.id };
@@ -96,11 +96,35 @@ describe('Ao tentar inserir uma transação com campos obrigatórios ausentes', 
       });
   };
 
-  test('Não deve inserir sem descrição', () => testRequiredFields('description'));
-  test('Não deve inserir sem data', () => testRequiredFields('date'));
-  test('Não deve inserir sem valor', () => testRequiredFields('ammount'));
-  test('Não deve inserir sem tipo', () => testRequiredFields('type'));
-  test('Não deve inserir sem id da conta', () => testRequiredFields('account_id'));
+  test('Inserir sem descrição', () => testRequiredFields('description'));
+  test('Inserir sem data', () => testRequiredFields('date'));
+  test('Inserir sem valor', () => testRequiredFields('ammount'));
+  test('Inserir sem tipo', () => testRequiredFields('type'));
+  test('Inserir sem id da conta', () => testRequiredFields('account_id'));
+});
+
+describe('Ao tentar inserir uma transação com valores inválidos, não deve:', () => {
+  let validTransaction;
+  beforeEach(() => {
+    validTransaction = { description: 'T without required fields', date: new Date(), ammount: 200.00, type: 'I', account_id: accUser.id };
+  });
+
+  const testInvalidValues = (fieldValue) => {
+    return request(app).post(MAIN_ROUTE)
+      .set('authorization', `bearer ${user.token}`)
+      .send({ ...validTransaction, ...fieldValue })
+      .then((result) => {
+        expect(result.status).toBe(400);
+        expect(result.body.error).toBe('Dados inválidos!');
+      });
+  };
+
+  test('Inserir com descrição nula', () => testInvalidValues({ description: null }));
+  test('Inserir com data nula', () => testInvalidValues({ date: null }));
+  test('Inserir com valor nulo', () => testInvalidValues({ ammount: null }));
+  test('Inserir com tipo nulo', () => testInvalidValues({ type: null }));
+  test('Inserir com tipo diferente dos obrigatórios', () => testInvalidValues({ type: 'A' }));
+  test('Inserir com id da conta nulo', () => testInvalidValues({ account_id: null }));
 });
 
 test('Deve retornar uma transação por ID', () => {
