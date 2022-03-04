@@ -43,12 +43,15 @@ test('Deve listar apenas as transações do usuário', () => {
 });
 
 test('Deve inserir transação com sucesso', () => {
+  const transaction = { description: 'T1', date: new Date('00', '00', '00', '0'), ammount: 100.03, type: 'I', account_id: accUser.id };
   return request(app).post(MAIN_ROUTE)
     .set('authorization', `bearer ${user.token}`)
-    .send({ description: 'T1', date: new Date(), ammount: 100.03, type: 'I', account_id: accUser.id })
+    .send(transaction)
     .then((result) => {
       expect(result.status).toBe(201);
-      expect(result.body.account_id).toBe(accUser.id);
+      transaction.date = transaction.date.toISOString();
+      transaction.ammount = transaction.ammount.toString();
+      expect(result.body).toMatchObject(transaction);
     });
 });
 
