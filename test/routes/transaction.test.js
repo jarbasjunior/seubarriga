@@ -55,6 +55,18 @@ test('Deve inserir transação com sucesso', () => {
     });
 });
 
+test('Transações de entrada devem ser positivas', () => {
+  const transaction = { description: 'Transaction input', date: new Date('00', '00', '00', '0'), ammount: -100.03, type: 'I', account_id: accUser.id };
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send(transaction)
+    .then((result) => {
+      expect(result.status).toBe(201);
+      transaction.ammount = (transaction.ammount * -1).toString();
+      expect(result.body.ammount).toBe(transaction.ammount);
+    });
+});
+
 test('Deve retornar uma transação por ID', () => {
   return app.db('transactions')
     .insert({ description: 'T ID', date: new Date(), ammount: 100.03, type: 'I', account_id: accUser.id }, ['id'])
