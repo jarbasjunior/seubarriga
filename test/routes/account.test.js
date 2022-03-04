@@ -46,7 +46,7 @@ test('Não deve inserir uma conta sem nome', () => {
     .set('authorization', `bearer ${user.token}`)
     .then((result) => {
       expect(result.status).toBe(400);
-      expect(result.body.error).toBe('Dados inválidos');
+      expect(result.body.error).toBe('Dados inválidos!');
     });
 });
 

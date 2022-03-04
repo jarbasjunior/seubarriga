@@ -22,7 +22,7 @@ module.exports = (app) => {
   };
 
   const save = async (account) => {
-    if (!account.name) throw new ValidationError({ message: 'Dados inválidos', status: 400 });
+    if (!account.name) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
 
     const accountDB = await read({ name: account.name, user_id: account.user_id });
     if (accountDB) throw new ValidationError({ message: 'Já existe uma conta com esse nome!', status: 422 });
