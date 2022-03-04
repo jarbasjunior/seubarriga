@@ -194,3 +194,14 @@ test('Não deve remover uma transação de outro usuário', () => {
         expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
       }));
 });
+
+test('Não deve remover conta com transação associada', () => {
+  return app.db('transactions')
+    .insert({ description: 'Transaction to remove', date: new Date(), ammount: 500.47, type: 'I', account_id: accUser.id }, ['id'])
+    .then(() => request(app).delete(`/v1/accounts/${accUser.id}`)
+      .set('authorization', `bearer ${user.token}`)
+      .then((result) => {
+        expect(result.status).toBe(422);
+        expect(result.body.error).toBe('Conta ainda possui transações associadas!');
+      }));
+});
