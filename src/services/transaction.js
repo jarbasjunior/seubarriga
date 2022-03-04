@@ -17,6 +17,8 @@ module.exports = (app) => {
     if (!transaction.description || !transaction.date || !transaction.ammount
       || !transaction.type || !transaction.account_id) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
 
+    if (!(transaction.type === 'I' || transaction.type === 'O')) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
+
     const newTransaction = { ...transaction };
 
     if ((transaction.type === 'I' && transaction.ammount < 0)
