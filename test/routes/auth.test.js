@@ -53,7 +53,7 @@ test('Não deve autenticar sem enviar e-mail', () => {
     .send({ password: '123456' })
     .then((res) => {
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Dados inválidos');
+      expect(res.body.error).toBe('Dados inválidos!');
     });
 });
 
@@ -62,6 +62,6 @@ test('Não deve autenticar sem enviar senha', () => {
     .send({ mail: `${Date.now()}@email.com` })
     .then((res) => {
       expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Dados inválidos');
+      expect(res.body.error).toBe('Dados inválidos!');
     });
 });

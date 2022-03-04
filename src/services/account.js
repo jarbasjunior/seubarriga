@@ -15,14 +15,16 @@ module.exports = (app) => {
       .update(body, '*');
   };
 
-  const remove = (id) => {
-    return app.db('accounts')
-      .where({ id })
-      .del();
+  const remove = async (id) => {
+    const transaction = await app.services.transaction.findOne({ account_id: id });
+
+    if (transaction) throw new ValidationError({ message: 'Conta ainda possui transações associadas!', status: 422 });
+
+    return app.db('accounts').where({ id }).del();
   };
 
   const save = async (account) => {
-    if (!account.name) throw new ValidationError({ message: 'Dados inválidos', status: 400 });
+    if (!account.name) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
 
     const accountDB = await read({ name: account.name, user_id: account.user_id });
     if (accountDB) throw new ValidationError({ message: 'Já existe uma conta com esse nome!', status: 422 });
@@ -30,7 +32,5 @@ module.exports = (app) => {
     return app.db('accounts').insert(account, '*');
   };
 
-  return {
-    findAll, read, update, save, remove,
-  };
+  return { findAll, read, update, save, remove };
 };

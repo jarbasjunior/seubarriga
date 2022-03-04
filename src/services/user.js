@@ -8,7 +8,7 @@ module.exports = (app) => {
 
   const findOne = (filter = {}) => {
     if (((Object.keys(filter)[0] === 'mail') && !filter.mail) || ((Object.keys(filter)[0] === 'id') && !filter.id)) {
-      throw new ValidationError({ message: 'Dados inválidos', status: 400 });
+      throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
     }
     return app.db('users').where(filter).first();
   };
@@ -19,7 +19,7 @@ module.exports = (app) => {
   };
 
   const save = async (user) => {
-    if (!user.name || !user.mail || !user.password) throw new ValidationError({ message: 'Dados inválidos', status: 400 });
+    if (!user.name || !user.mail || !user.password) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
 
     const userDb = await findOne({ mail: user.mail });
     if (userDb) throw new ValidationError({ message: 'E-mail já cadastrado', status: 422 });

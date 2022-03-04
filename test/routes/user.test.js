@@ -30,40 +30,28 @@ test('Deve inserir usuário com sucesso', () => {
     .set('authorization', `bearer ${userAllowed.token}`)
     .then((res) => {
       expect(res.status).toBe(201);
-      expect(res.body.name).toBe('Walter Mitty');
-      expect(res.body.mail).toBe(user.mail);
-      expect(res.body).not.toHaveProperty('password');
+      delete user.password;
+      expect(res.body).toMatchObject(user);
     });
 });
 
-test('Não deve inserir usuário sem nome', () => {
-  return request(app).post(MAIN_ROUTE)
-    .send({ mail: 'mail@email.com', password: '123456' })
-    .set('authorization', `bearer ${userAllowed.token}`)
-    .then((res) => {
-      expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Dados inválidos');
-    });
-});
+describe('Na tentativa de inserir usuário, não deve:', () => {
+  const validUser = { name: 'Walter Mitty', mail: `${Date.now()}@email.com`, password: '123456' };
 
-test('Não deve inserir usuário sem e-mail', async () => {
-  const result = await request(app).post(MAIN_ROUTE)
-    .send({ name: 'Walter Mitty', password: '123456' })
-    .set('authorization', `bearer ${userAllowed.token}`);
+  const testRequiredFields = (field) => {
+    delete validUser[field];
+    return request(app).post(MAIN_ROUTE)
+      .set('authorization', `bearer ${userAllowed.token}`)
+      .send(validUser)
+      .then((result) => {
+        expect(result.status).toBe(400);
+        expect(result.body.error).toBe('Dados inválidos!');
+      });
+  };
 
-  expect(result.status).toBe(400);
-  expect(result.body.error).toBe('Dados inválidos');
-});
-
-test('Não deve inserir usuário sem senha', (done) => {
-  request(app).post(MAIN_ROUTE)
-    .send({ name: 'Walter Mitty', mail: `${Date.now()}@email.com` })
-    .set('authorization', `bearer ${userAllowed.token}`)
-    .then((res) => {
-      expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Dados inválidos');
-      done();
-    });
+  test('Inserir sem nome', () => testRequiredFields('name'));
+  test('Inserir sem e-mail', () => testRequiredFields('mail'));
+  test('Inserir sem senha', () => testRequiredFields('password'));
 });
 
 test('Deve armazenar senha criptografada', async () => {
