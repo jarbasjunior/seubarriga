@@ -79,6 +79,56 @@ test('Transações de saída devem ser negativas', () => {
     });
 });
 
+test('Não deve inserir uma transação sem descrição', () => {
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send({ date: new Date(), ammount: 100.00, type: 'I', account_id: accUser.id })
+    .then((result) => {
+      expect(result.status).toBe(400);
+      expect(result.body.error).toBe('Dados inválidos!');
+    });
+});
+
+test('Não deve inserir uma transação sem data', () => {
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send({ description: 'Transaction without date', ammount: 100.00, type: 'I', account_id: accUser.id })
+    .then((result) => {
+      expect(result.status).toBe(400);
+      expect(result.body.error).toBe('Dados inválidos!');
+    });
+});
+
+test('Não deve inserir uma transação sem valor', () => {
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send({ description: 'Transaction without value', date: new Date(), type: 'I', account_id: accUser.id })
+    .then((result) => {
+      expect(result.status).toBe(400);
+      expect(result.body.error).toBe('Dados inválidos!');
+    });
+});
+
+test('Não deve inserir uma transação sem tipo', () => {
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send({ description: 'Transaction without type', date: new Date(), ammount: 100.00, account_id: accUser.id })
+    .then((result) => {
+      expect(result.status).toBe(400);
+      expect(result.body.error).toBe('Dados inválidos!');
+    });
+});
+
+test('Não deve inserir uma transação sem id da conta', () => {
+  return request(app).post(MAIN_ROUTE)
+    .set('authorization', `bearer ${user.token}`)
+    .send({ description: 'Transaction without account id', date: new Date(), ammount: 100.00, type: 'I' })
+    .then((result) => {
+      expect(result.status).toBe(400);
+      expect(result.body.error).toBe('Dados inválidos!');
+    });
+});
+
 test('Deve retornar uma transação por ID', () => {
   return app.db('transactions')
     .insert({ description: 'T ID', date: new Date(), ammount: 100.03, type: 'I', account_id: accUser.id }, ['id'])
