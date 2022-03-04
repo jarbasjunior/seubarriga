@@ -15,10 +15,12 @@ module.exports = (app) => {
       .update(body, '*');
   };
 
-  const remove = (id) => {
-    return app.db('accounts')
-      .where({ id })
-      .del();
+  const remove = async (id) => {
+    const transaction = await app.services.transaction.findOne({ account_id: id });
+
+    if (transaction) throw new ValidationError({ message: 'Conta ainda possui transações associadas!', status: 422 });
+
+    return app.db('accounts').where({ id }).del();
   };
 
   const save = async (account) => {
