@@ -86,3 +86,14 @@ test('Deve remover uma transação', () => {
         expect(result.status).toBe(204);
       }));
 });
+
+test('Não deve remover uma transação de outro usuário', () => {
+  return app.db('transactions')
+    .insert({ description: 'Transaction not to remove', date: new Date(), ammount: 500.47, type: 'I', account_id: accUser2.id }, ['id'])
+    .then((res) => request(app).delete(`${MAIN_ROUTE}/${res[0].id}`)
+      .set('authorization', `bearer ${user.token}`)
+      .then((result) => {
+        expect(result.status).toBe(403);
+        expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
+      }));
+});
