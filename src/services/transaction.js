@@ -1,3 +1,5 @@
+const ValidationError = require('../errors/ValidationError');
+
 module.exports = (app) => {
   const read = (userId, filter = {}) => {
     return app.db('transactions')
@@ -12,6 +14,9 @@ module.exports = (app) => {
   };
 
   const create = (transaction) => {
+    if (!transaction.description || !transaction.date || !transaction.ammount
+      || !transaction.type || !transaction.account_id) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
+
     const newTransaction = { ...transaction };
 
     if ((transaction.type === 'I' && transaction.ammount < 0)
