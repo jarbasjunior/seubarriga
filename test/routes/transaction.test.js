@@ -76,3 +76,13 @@ test('Deve alterar uma transação', () => {
         expect(result.body.description).toBe('Transaction updated');
       }));
 });
+
+test('Deve remover uma transação', () => {
+  return app.db('transactions')
+    .insert({ description: 'Transaction to remove', date: new Date(), ammount: 500.47, type: 'I', account_id: accUser.id }, ['id'])
+    .then((res) => request(app).delete(`${MAIN_ROUTE}/${res[0].id}`)
+      .set('authorization', `bearer ${user.token}`)
+      .then((result) => {
+        expect(result.status).toBe(204);
+      }));
+});
