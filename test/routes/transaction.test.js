@@ -64,6 +64,17 @@ test('Deve retornar uma transação por ID', () => {
       }));
 });
 
+test('Não deve retornar uma transação por ID de outro usuário', () => {
+  return app.db('transactions')
+    .insert({ description: 'Transaction should not to show', date: new Date(), ammount: 403.47, type: 'I', account_id: accUser2.id }, ['id'])
+    .then((res) => request(app).get(`${MAIN_ROUTE}/${res[0].id}`)
+      .set('authorization', `bearer ${user.token}`)
+      .then((result) => {
+        expect(result.status).toBe(403);
+        expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
+      }));
+});
+
 test('Deve alterar uma transação', () => {
   return app.db('transactions')
     .insert({ description: 'To update', date: new Date(), ammount: 143.03, type: 'I', account_id: accUser.id }, ['id'])
