@@ -9,6 +9,8 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
   - [Node.js e NPM](#nodejs-e-npm)
 
+- [Configuração do ambiente](#ambiente)
+
 - [Pacotes utilizados](#pacotes-utilizados)
 
   - [Express](#express)
@@ -30,6 +32,15 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 ## <a id="requisitos"/> Requisitos: ❗
 
 * <a id="nodejs-e-npm"/> [Node.js e NPM](https://nodejs.org/en/download) - Node.js como ambiente de execução para criar e executar aplicações em Javascript. E o NPM para: instalação de pacotes, gerenciamento de versões e dependências.
+
+## <a id="ambiente"/> Configuração do ambiente: ⚙️ 🚀 </a>
+
+* Na pasta raiz do projeto, execute o comando `npm install`, para instalar todas as dependências do projeto.
+
+* Em seguida, execute o comando abaixo para criar a massa de dados, configurada no arquivo *seed*.
+  ```
+  node_modules/.bin/knex seed:run transfers --env test
+  ```
 
 ## <a id="pacotes-utilizados"/> Pacotes utilizados: 📦 📚
 
@@ -58,14 +69,14 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
     Após a execução, serão exibidas várias opções para uma nova execução, para sair digite `q`.
   
     - Caso você esteja utilizando o **eslint** (recomendado), no arquivo `.eslintrc.json` dentro da chave `env` adicione a chave `"jest": true`, como no exemplo abaixo:
-    ```bash
-      "env": {
-        "commonjs": true,
-        "es2021": true,
-        "jest": true, # informa ao lint que estamos utilizando o jest
-        "node": true
-      }
-    ```
+      ```bash
+        "env": {
+          "commonjs": true,
+          "es2021": true,
+          "jest": true, # informa ao lint que estamos utilizando o jest
+          "node": true
+        }
+      ```
 
     - Execute o comando `npm test` para verificar a eecução do Jest.
 
@@ -80,9 +91,9 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   * ### Instalação eslint ⚙️
 
     - Na pasta raiz do projeto **seubarriga**, execute o comando abaixo para instalar o eslint como uma dependência de desenvolvimento do projeto.
-    ```
-    npm i -D eslint
-    ```
+      ```
+      npm i -D eslint
+      ```
     - Na pasta raiz do projeto **seubarriga**, execute o comando `node_modules/.bin/eslint --init` abaixo para configurar o eslint, em seguida responda as seguintes perguntas abaixo, conforme respostas exibidas:
 
       | <center>PERGUNTA</center> | RESPOSTA |
