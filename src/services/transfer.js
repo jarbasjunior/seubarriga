@@ -9,6 +9,19 @@ module.exports = (app) => {
     return app.db('transfers').where(filter).first();
   };
 
+  const update = async (id, transfer) => {
+    const result = await app.db('transfers').where({ id }).update(transfer, '*');
+
+    const transactions = [
+      { account_id: transfer.account_origin_id, transfer_id: id, description: `Transfer to account: ${transfer.account_destiny_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O' },
+      { account_id: transfer.account_destiny_id, transfer_id: id, description: `Transfer from account: ${transfer.account_origin_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I' },
+    ];
+
+    await app.db('transactions').where({ transfer_id: id }).del();
+    await app.db('transactions').insert(transactions);
+    return result;
+  };
+
   const create = async (transfer) => {
     if (!transfer.description || !transfer.date || !transfer.ammount
       || !transfer.account_origin_id || !transfer.account_destiny_id) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
@@ -39,5 +52,5 @@ module.exports = (app) => {
     return result;
   };
 
-  return { read, findOne, create };
+  return { read, findOne, update, create };
 };

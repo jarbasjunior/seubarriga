@@ -129,7 +129,7 @@ describe('Na tentativa de salvar uma transferência inválida, não deve inserir
   test('Se a conta de destino não existir', () => testInvalidValues({ account_destiny_id: invalidDestinyAccount }, `Conta de destino: |${invalidDestinyAccount}| inexistente!`));
 });
 
-describe('Quando altera uma transferência válida deve:', async () => {
+describe('Quando alterar uma transferência válida deve:', async () => {
   const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
   const transfer = { account_origin_id: 10000, account_destiny_id: 10001, description: 'Updated Transfer', user_id: 10000, date, ammount: 80.00 };
   const transferId = 10000;
