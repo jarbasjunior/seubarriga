@@ -1,9 +1,28 @@
+const ValidationError = require('../errors/ValidationError');
+
 module.exports = (app) => {
   const read = (filter = {}) => {
     return app.db('transfers').where(filter).select();
   };
 
   const create = async (transfer) => {
+    if (!transfer.description || !transfer.date || !transfer.ammount
+      || !transfer.account_origin_id || !transfer.account_destiny_id) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
+
+    const existOriginAccount = await app.db('accounts').where('id', transfer.account_origin_id);
+    if (!existOriginAccount.length) throw new ValidationError({ message: `Conta de origem: |${transfer.account_origin_id}| inexistente!`, status: 422 });
+
+    const existDestinyAccount = await app.db('accounts').where('id', transfer.account_destiny_id);
+    if (!existDestinyAccount.length) throw new ValidationError({ message: `Conta de destino: |${transfer.account_destiny_id}| inexistente!`, status: 422 });
+
+    if (transfer.account_origin_id === transfer.account_destiny_id) throw new ValidationError({ message: 'Contas de origem e destino não podem ser as mesmas!', status: 422 });
+
+    const accounts = await app.db('accounts').whereIn('id', [transfer.account_origin_id, transfer.account_destiny_id]);
+    accounts.forEach((acc) => {
+      if (acc.user_id !== parseInt(transfer.user_id, 10)) throw new ValidationError({ message: `Conta |${acc.id}| não pertence ao usuário!`, status: 422 });
+    });
+    console.log(accounts);
+
     const result = await app.db('transfers').insert(transfer, '*');
     const transferId = result[0].id;
 
