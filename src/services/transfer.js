@@ -1,28 +1,7 @@
 const ValidationError = require('../errors/ValidationError');
 
 module.exports = (app) => {
-  const read = (filter = {}) => {
-    return app.db('transfers').where(filter).select();
-  };
-
-  const findOne = (filter) => {
-    return app.db('transfers').where(filter).first();
-  };
-
-  const update = async (id, transfer) => {
-    const result = await app.db('transfers').where({ id }).update(transfer, '*');
-
-    const transactions = [
-      { account_id: transfer.account_origin_id, transfer_id: id, description: `Transfer to account: ${transfer.account_destiny_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O' },
-      { account_id: transfer.account_destiny_id, transfer_id: id, description: `Transfer from account: ${transfer.account_origin_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I' },
-    ];
-
-    await app.db('transactions').where({ transfer_id: id }).del();
-    await app.db('transactions').insert(transactions);
-    return result;
-  };
-
-  const create = async (transfer) => {
+  const validate = async (transfer) => {
     if (!transfer.description || !transfer.date || !transfer.ammount
       || !transfer.account_origin_id || !transfer.account_destiny_id) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
 
@@ -38,7 +17,33 @@ module.exports = (app) => {
     accounts.forEach((acc) => {
       if (acc.user_id !== parseInt(transfer.user_id, 10)) throw new ValidationError({ message: `Conta |${acc.id}| não pertence ao usuário!`, status: 422 });
     });
-    console.log(accounts);
+  };
+
+  const read = (filter = {}) => {
+    return app.db('transfers').where(filter).select();
+  };
+
+  const findOne = (filter) => {
+    return app.db('transfers').where(filter).first();
+  };
+
+  const update = async (id, transfer) => {
+    await validate(transfer);
+
+    const result = await app.db('transfers').where({ id }).update(transfer, '*');
+
+    const transactions = [
+      { account_id: transfer.account_origin_id, transfer_id: id, description: `Transfer to account: ${transfer.account_destiny_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O' },
+      { account_id: transfer.account_destiny_id, transfer_id: id, description: `Transfer from account: ${transfer.account_origin_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I' },
+    ];
+
+    await app.db('transactions').where({ transfer_id: id }).del();
+    await app.db('transactions').insert(transactions);
+    return result;
+  };
+
+  const create = async (transfer) => {
+    await validate(transfer);
 
     const result = await app.db('transfers').insert(transfer, '*');
     const transferId = result[0].id;

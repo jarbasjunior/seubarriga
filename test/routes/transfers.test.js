@@ -175,3 +175,51 @@ describe('Quando alterar uma transferência válida deve:', async () => {
     expect(credit.transfer_id).toBe(transferId);
   });
 });
+
+describe('Na tentativa de atualizar uma transferência inválida, não deve alterar:', () => {
+  const transferId = 10000;
+  let date;
+  let validTransfer;
+  let invalidOriginAccount;
+  let invalidDestinyAccount;
+
+  beforeEach(() => {
+    date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
+    validTransfer = { account_origin_id: 10000, account_destiny_id: 10001, description: 'Regular Transfer', user_id: 10000, date, ammount: 50.00 };
+    invalidOriginAccount = validTransfer.account_origin_id * 100;
+    invalidDestinyAccount = validTransfer.account_destiny_id * 100;
+  });
+
+  const testInvalidValues = (fieldValue, message) => {
+    const newBody = { ...validTransfer, ...fieldValue };
+    return request(app).put(`${MAIN_ROUTE}/${transferId}`)
+      .set('authorization', `bearer ${TOKEN}`)
+      .send(newBody)
+      .then((result) => {
+        expect(result.status).toBe(422);
+        expect(result.body.error).toBe(message);
+      });
+  };
+
+  const testRequiredFields = (field) => {
+    delete validTransfer[field];
+    return request(app).put(`${MAIN_ROUTE}/${transferId}`)
+      .set('authorization', `bearer ${TOKEN}`)
+      .send(validTransfer)
+      .then((result) => {
+        expect(result.status).toBe(400);
+        expect(result.body.error).toBe('Dados inválidos!');
+      });
+  };
+
+  test('Sem descrição', () => testRequiredFields('description'));
+  test('Sem data', () => testRequiredFields('date'));
+  test('Sem valor', () => testRequiredFields('ammount'));
+  test('Sem conta de origem', () => testRequiredFields('account_origin_id'));
+  test('Sem conta de destino', () => testRequiredFields('account_destiny_id'));
+  test('Se as contas de origem e destino forem as mesmas', () => testInvalidValues({ account_destiny_id: validTransfer.account_origin_id }, 'Contas de origem e destino não podem ser as mesmas!'));
+  test('Se a conta de origem pertecer a outro usuário', () => testInvalidValues({ account_origin_id: 10002 }, 'Conta |10002| não pertence ao usuário!'));
+  test('Se a conta de destino pertecer a outro usuário', () => testInvalidValues({ account_destiny_id: 10003 }, 'Conta |10003| não pertence ao usuário!'));
+  test('Se a conta de origem não existir', () => testInvalidValues({ account_origin_id: invalidOriginAccount }, `Conta de origem: |${invalidOriginAccount}| inexistente!`));
+  test('Se a conta de destino não existir', () => testInvalidValues({ account_destiny_id: invalidDestinyAccount }, `Conta de destino: |${invalidDestinyAccount}| inexistente!`));
+});
