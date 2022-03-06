@@ -21,6 +21,19 @@ test('Deve listar apenas as transferências do usuário', () => {
     });
 });
 
+test.only('Deve retornar uma transferência por ID', () => {
+  const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
+  const transfer = { id: 10001, account_origin_id: 10002, account_destiny_id: 10003, description: 'Tranfer #2', user_id: 10001, date, ammount: 150.00 };
+  return request(app).get(`${MAIN_ROUTE}/${transfer.id}`)
+    .set('authorization', `bearer ${TOKEN}`)
+    .then((result) => {
+      expect(result.status).toBe(200);
+      transfer.date = transfer.date.toISOString();
+      transfer.ammount = Math.round((transfer.ammount * 100) / 100).toFixed(2);
+      expect(result.body).toMatchObject(transfer);
+    });
+});
+
 describe('Quando inserir uma transferência válida deve:', async () => {
   const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
   const transfer = { account_origin_id: 10000, account_destiny_id: 10001, description: 'Regular Transfer', user_id: 10000, date, ammount: 50.00 };
