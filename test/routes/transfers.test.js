@@ -128,3 +128,50 @@ describe('Na tentativa de salvar uma transferência inválida, não deve inserir
   test('Se a conta de origem não existir', () => testInvalidValues({ account_origin_id: invalidOriginAccount }, `Conta de origem: |${invalidOriginAccount}| inexistente!`));
   test('Se a conta de destino não existir', () => testInvalidValues({ account_destiny_id: invalidDestinyAccount }, `Conta de destino: |${invalidDestinyAccount}| inexistente!`));
 });
+
+describe('Quando altera uma transferência válida deve:', async () => {
+  const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
+  const transfer = { account_origin_id: 10000, account_destiny_id: 10001, description: 'Updated Transfer', user_id: 10000, date, ammount: 80.00 };
+  const transferId = 10000;
+  let credit;
+  let debit;
+  let transactions;
+
+  test('Retornar o status 201 e os dados da transferência', () => {
+    return request(app).put(`${MAIN_ROUTE}/${transferId}`)
+      .set('authorization', `bearer ${TOKEN}`)
+      .send(transfer)
+      .then(async (result) => {
+        expect(result.status).toBe(200);
+        transfer.date = transfer.date.toISOString();
+        transfer.ammount = Math.round((transfer.ammount * 100) / 100).toFixed(2);
+        expect(result.body).toMatchObject(transfer);
+      });
+  });
+
+  test('Gerar as transações de entrada e saída para a transferência', async () => {
+    transactions = await app.db('transactions').where({ transfer_id: transferId }).orderBy('ammount');
+    [debit, credit] = transactions;
+    expect(transactions).toHaveLength(2);
+    expect(transactions[0].description).toBe(`Transfer to account: ${transfer.account_destiny_id}`);
+    expect(transactions[1].description).toBe(`Transfer from account: ${transfer.account_origin_id}`);
+  });
+
+  test('A transação de saída deve ser negativa', () => {
+    const ammountAccOrigin = Math.round(((transfer.ammount * -1) * 100) / 100).toFixed(2);
+    expect(debit.ammount).toBe(ammountAccOrigin);
+    expect(debit.type).toBe('O');
+    expect(debit.account_id).toBe(transfer.account_origin_id);
+  });
+
+  test('A transação de entrada deve ser positiva', () => {
+    expect(credit.ammount).toBe(transfer.ammount);
+    expect(credit.type).toBe('I');
+    expect(credit.account_id).toBe(transfer.account_destiny_id);
+  });
+
+  test('As duas transações geradas devem referenciar a transferência que a originou', () => {
+    expect(debit.transfer_id).toBe(transferId);
+    expect(credit.transfer_id).toBe(transferId);
+  });
+});
