@@ -223,3 +223,43 @@ describe('Na tentativa de atualizar uma transferência inválida, não deve alte
   test('Se a conta de origem não existir', () => testInvalidValues({ account_origin_id: invalidOriginAccount }, `Conta de origem: |${invalidOriginAccount}| inexistente!`));
   test('Se a conta de destino não existir', () => testInvalidValues({ account_destiny_id: invalidDestinyAccount }, `Conta de destino: |${invalidDestinyAccount}| inexistente!`));
 });
+
+describe.only('Quando remover uma transferência, deve:', () => {
+  let transferId;
+  let expectedStatusCode;
+
+  beforeAll(async () => {
+    const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
+    const validTransfer = { account_origin_id: 10000, account_destiny_id: 10001, description: 'Transfer to remove', user_id: 10000, date, ammount: 50.00 };
+    await request(app).post(MAIN_ROUTE)
+      .set('authorization', `bearer ${TOKEN}`)
+      .send(validTransfer)
+      .then((result) => {
+        expect(result.status).toBe(201);
+        transferId = result.body.id;
+      });
+    return request(app).delete(`${MAIN_ROUTE}/${transferId}`)
+      .set('authorization', `bearer ${TOKEN}`)
+      .then((result) => {
+        expectedStatusCode = result.status;
+      });
+  });
+
+  test('Retornar o status 204', () => {
+    expect(expectedStatusCode).toBe(204);
+  });
+
+  test('Remover transações associadas', () => {
+    return app.db('transactions').where({ transfer_id: transferId })
+      .then((result) => {
+        expect(result).toHaveLength(0);
+      });
+  });
+
+  test('Remover registro do banco de tranferências', () => {
+    return app.db('transfers').where({ id: transferId })
+      .then((result) => {
+        expect(result).toHaveLength(0);
+      });
+  });
+});
