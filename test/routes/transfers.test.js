@@ -224,7 +224,7 @@ describe('Na tentativa de atualizar uma transferência inválida, não deve alte
   test('Se a conta de destino não existir', () => testInvalidValues({ account_destiny_id: invalidDestinyAccount }, `Conta de destino: |${invalidDestinyAccount}| inexistente!`));
 });
 
-describe.only('Quando remover uma transferência, deve:', () => {
+describe('Quando remover uma transferência, deve:', () => {
   let transferId;
   let expectedStatusCode;
 
@@ -256,7 +256,7 @@ describe.only('Quando remover uma transferência, deve:', () => {
       });
   });
 
-  test('Remover registro do banco de tranferências', () => {
+  test('Remover registro do banco de transferências', () => {
     return app.db('transfers').where({ id: transferId })
       .then((result) => {
         expect(result).toHaveLength(0);
