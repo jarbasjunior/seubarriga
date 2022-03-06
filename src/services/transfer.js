@@ -28,10 +28,7 @@ module.exports = (app) => {
   };
 
   const update = async (id, transfer) => {
-    await validate(transfer);
-
     const result = await app.db('transfers').where({ id }).update(transfer, '*');
-
     const transactions = [
       { account_id: transfer.account_origin_id, transfer_id: id, description: `Transfer to account: ${transfer.account_destiny_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O' },
       { account_id: transfer.account_destiny_id, transfer_id: id, description: `Transfer from account: ${transfer.account_origin_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I' },
@@ -43,11 +40,8 @@ module.exports = (app) => {
   };
 
   const create = async (transfer) => {
-    await validate(transfer);
-
     const result = await app.db('transfers').insert(transfer, '*');
     const transferId = result[0].id;
-
     const transactions = [
       { account_id: transfer.account_origin_id, transfer_id: transferId, description: `Transfer to account: ${transfer.account_destiny_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O' },
       { account_id: transfer.account_destiny_id, transfer_id: transferId, description: `Transfer from account: ${transfer.account_origin_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I' },
@@ -57,5 +51,5 @@ module.exports = (app) => {
     return result;
   };
 
-  return { read, findOne, update, create };
+  return { read, findOne, update, create, validate };
 };
