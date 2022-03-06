@@ -5,6 +5,10 @@ module.exports = (app) => {
     return app.db('transfers').where(filter).select();
   };
 
+  const findOne = (filter) => {
+    return app.db('transfers').where(filter).first();
+  };
+
   const create = async (transfer) => {
     if (!transfer.description || !transfer.date || !transfer.ammount
       || !transfer.account_origin_id || !transfer.account_destiny_id) throw new ValidationError({ message: 'Dados inválidos!', status: 400 });
@@ -35,5 +39,5 @@ module.exports = (app) => {
     return result;
   };
 
-  return { read, create };
+  return { read, findOne, create };
 };
