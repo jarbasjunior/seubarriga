@@ -2,7 +2,8 @@ const request = require('supertest');
 const app = require('../../src/app');
 
 const MAIN_ROUTE = '/v1/transfers';
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDAsIm5hbWUiOiJVc2VyICMxIiwibWFpbCI6InVzZXJAZW1haWwuY29tIn0.xhCruIotVVEurw_nK531ubwxqSepunzD22Mx2B2Ktkc';
+const TOKEN_USER_1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDAsIm5hbWUiOiJVc2VyICMxIiwibWFpbCI6InVzZXJAZW1haWwuY29tIn0.xhCruIotVVEurw_nK531ubwxqSepunzD22Mx2B2Ktkc';
+const TOKEN_USER_2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwMDEsIm5hbWUiOiJVc2VyICMyIiwibWFpbCI6InVzZXIyQGVtYWlsLmNvbSJ9.5ChltS3mD_fRY3ZHAqo9-5YTxbbGd_Bw-5_Ub8BJzjM';
 
 beforeAll(async () => {
   await app.db.seed.run();
@@ -12,7 +13,7 @@ test('Deve listar apenas as transferências do usuário', () => {
   const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
   const transfer = { id: 10000, account_origin_id: 10000, account_destiny_id: 10001, description: 'Tranfer #1', user_id: 10000, date, ammount: 100.00 };
   return request(app).get(MAIN_ROUTE)
-    .set('authorization', `bearer ${TOKEN}`)
+    .set('authorization', `bearer ${TOKEN_USER_1}`)
     .then((result) => {
       expect(result.status).toBe(200);
       transfer.date = transfer.date.toISOString();
@@ -25,12 +26,21 @@ test('Deve retornar uma transferência por ID', () => {
   const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
   const transfer = { id: 10001, account_origin_id: 10002, account_destiny_id: 10003, description: 'Tranfer #2', user_id: 10001, date, ammount: 150.00 };
   return request(app).get(`${MAIN_ROUTE}/${transfer.id}`)
-    .set('authorization', `bearer ${TOKEN}`)
+    .set('authorization', `bearer ${TOKEN_USER_2}`)
     .then((result) => {
       expect(result.status).toBe(200);
       transfer.date = transfer.date.toISOString();
       transfer.ammount = Math.round((transfer.ammount * 100) / 100).toFixed(2);
       expect(result.body).toMatchObject(transfer);
+    });
+});
+
+test('Não deve retornar uma transferência de outro usuário', () => {
+  return request(app).get(`${MAIN_ROUTE}/10001`)
+    .set('authorization', `bearer ${TOKEN_USER_1}`)
+    .then((result) => {
+      expect(result.status).toBe(403);
+      expect(result.body.error).toBe('Recurso não está disponível para este usuário!');
     });
 });
 
@@ -44,7 +54,7 @@ describe('Quando inserir uma transferência válida deve:', async () => {
 
   test('Retornar o status 201 e os dados da transferência', () => {
     return request(app).post(MAIN_ROUTE)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(transfer)
       .then(async (result) => {
         expect(result.status).toBe(201);
@@ -98,7 +108,7 @@ describe('Na tentativa de salvar uma transferência inválida, não deve inserir
   const testInvalidValues = (fieldValue, message) => {
     const newBody = { ...validTransfer, ...fieldValue };
     return request(app).post(MAIN_ROUTE)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(newBody)
       .then((result) => {
         expect(result.status).toBe(422);
@@ -109,7 +119,7 @@ describe('Na tentativa de salvar uma transferência inválida, não deve inserir
   const testRequiredFields = (field) => {
     delete validTransfer[field];
     return request(app).post(MAIN_ROUTE)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(validTransfer)
       .then((result) => {
         expect(result.status).toBe(400);
@@ -139,7 +149,7 @@ describe('Quando alterar uma transferência válida deve:', async () => {
 
   test('Retornar o status 201 e os dados da transferência', () => {
     return request(app).put(`${MAIN_ROUTE}/${transferId}`)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(transfer)
       .then(async (result) => {
         expect(result.status).toBe(200);
@@ -193,7 +203,7 @@ describe('Na tentativa de atualizar uma transferência inválida, não deve alte
   const testInvalidValues = (fieldValue, message) => {
     const newBody = { ...validTransfer, ...fieldValue };
     return request(app).put(`${MAIN_ROUTE}/${transferId}`)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(newBody)
       .then((result) => {
         expect(result.status).toBe(422);
@@ -204,7 +214,7 @@ describe('Na tentativa de atualizar uma transferência inválida, não deve alte
   const testRequiredFields = (field) => {
     delete validTransfer[field];
     return request(app).put(`${MAIN_ROUTE}/${transferId}`)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(validTransfer)
       .then((result) => {
         expect(result.status).toBe(400);
@@ -232,14 +242,14 @@ describe('Quando remover uma transferência, deve:', () => {
     const date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDay(), '00', '00', '00', '0');
     const validTransfer = { account_origin_id: 10000, account_destiny_id: 10001, description: 'Transfer to remove', user_id: 10000, date, ammount: 50.00 };
     await request(app).post(MAIN_ROUTE)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .send(validTransfer)
       .then((result) => {
         expect(result.status).toBe(201);
         transferId = result.body.id;
       });
     return request(app).delete(`${MAIN_ROUTE}/${transferId}`)
-      .set('authorization', `bearer ${TOKEN}`)
+      .set('authorization', `bearer ${TOKEN_USER_1}`)
       .then((result) => {
         expectedStatusCode = result.status;
       });

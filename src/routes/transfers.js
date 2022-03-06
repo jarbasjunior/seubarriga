@@ -1,5 +1,7 @@
 const express = require('express');
 
+const ValidationError = require('../errors/ValidationError');
+
 module.exports = (app) => {
   const router = express.Router();
 
@@ -8,6 +10,14 @@ module.exports = (app) => {
       .then(() => next())
       .catch((err) => next(err));
   };
+
+  router.param('id', (req, res, next) => {
+    app.services.transfer.findOne({ id: req.params.id })
+      .then((transfer) => {
+        if (transfer.user_id !== req.user.id) throw new ValidationError({ message: 'Recurso não está disponível para este usuário!', status: 403 });
+        next();
+      }).catch((err) => next(err));
+  });
 
   router.get('/', (req, res, next) => {
     app.services.transfer.read({ user_id: req.user.id })
