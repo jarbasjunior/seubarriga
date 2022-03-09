@@ -22,6 +22,11 @@
     "lint": "eslint test/** src/** --fix",
     "secure-mode": "jest --watchAll --runInBand --verbose=true"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm test"
+    }
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -38,6 +43,7 @@
     "consign": "0.1.6",
     "express": "4.16.4",
     "handlebars": "^4.5.3",
+    "husky": "1.2.0",
     "jwt-simple": "0.5.5",
     "knex": "0.15.2",
     "moment": "2.22.2",
