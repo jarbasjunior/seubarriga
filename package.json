@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "test": "jest",
     "lint": "eslint test/** src/** --fix",
-    "secure-mode": "jest --watchAll --verbose=true"
+    "secure-mode": "jest --watchAll --runInBand --verbose=true"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,7 @@
     "express": "4.16.4",
     "jwt-simple": "0.5.5",
     "knex": "0.15.2",
+    "moment": "2.22.2",
     "passport": "0.4.0",
     "passport-jwt": "4.0.0",
     "pg": "8.0.3"
