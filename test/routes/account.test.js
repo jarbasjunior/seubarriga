@@ -50,7 +50,10 @@ test('Não deve inserir uma conta sem nome', () => {
     });
 });
 
-test('Deve listar apenas as contas do usuário', () => {
+test('Deve listar apenas as contas do usuário', async () => {
+  await app.db('transactions').del();
+  await app.db('transfers').del();
+  await app.db('accounts').del();
   return app.db('accounts').insert([
     { name: 'Account User #1', user_id: user.id },
     { name: 'Account User #2', user_id: user2.id },
