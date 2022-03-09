@@ -61,6 +61,7 @@ describe('Quando inserir uma transferência válida deve:', async () => {
         transfer.date = transfer.date.toISOString();
         transfer.ammount = Math.round((transfer.ammount * 100) / 100).toFixed(2);
         expect(result.body).toMatchObject(transfer);
+        // TODO remover dependencia entre testes causada pela linha abaixo
         transferId = result.body.id;
       });
   });
@@ -89,6 +90,11 @@ describe('Quando inserir uma transferência válida deve:', async () => {
   test('As duas transações geradas devem referenciar a transferência que a originou', () => {
     expect(debit.transfer_id).toBe(transferId);
     expect(credit.transfer_id).toBe(transferId);
+  });
+
+  test('Ambas devem estar com status de pagas', () => {
+    expect(debit.paid).toBe(true);
+    expect(credit.paid).toBe(true);
   });
 });
 
