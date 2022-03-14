@@ -8,8 +8,10 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 - [Requisitos](#requisitos)
 
   - [Node.js e NPM](#nodejs-e-npm)
+  - [Postgres](#postgres)
 
 - [Configuração do ambiente](#ambiente)
+- [Execução dos testes](#testes)
 
 - [Pacotes utilizados](#pacotes-utilizados)
 
@@ -26,21 +28,46 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   - [JWT](#jwt)
   - [Passport](#passport)
   - [Passport JWT](#passport-jwt)
+  - [Husky](#husky)
 
 ---
 
 ## <a id="requisitos"/> Requisitos: ❗
 
 * <a id="nodejs-e-npm"/> [Node.js e NPM](https://nodejs.org/en/download) - Node.js como ambiente de execução para criar e executar aplicações em Javascript. E o NPM para: instalação de pacotes, gerenciamento de versões e dependências.
+* <a id="postgres"/> [Postgres](https://www.postgresql.org/download) - Como banco de dados.
 
 ## <a id="ambiente"/> Configuração do ambiente: ⚙️ 🚀 </a>
 
 * Na pasta raiz do projeto, execute o comando `npm install`, para instalar todas as dependências do projeto.
 
-* Em seguida, execute o comando abaixo para criar a massa de dados, configurada no arquivo *seed*.
+* Confira a versão do postgres (`psql -V`) instalada na sua máquina (**OBS.** Neste projeto foi utilizada a versão **10.19**), caso sua versão seja diferente altere no arquivo `knexfile.js` as chaves: `test.version` e `prod.version`, para a versão correspondente instalada na sua máquina.
+
+* Execute o comando `sudo lsof -i -P -n | grep postgres`, para saber qual a porta o postgres está utilizando na sua máquina e altere as chaves: `test.connection.port` e `prod.connection.port` do arquivo `knexfile.js`, para a porta listada no terminal.
+
+* Execute o comando `psql -U postgres`, em seguida insira a senha configurada na instalação do postgres, para entrar no console dele.
+
+* Dentro do console do postgres execute o comando `CREATE DATABASE barriga;` para criar o banco do projeto, depois `exit` para sair do console.
+
+* Em seguida, execute o comando abaixo para criar as tabelas configuradas nos arquivos de migração.
   ```
-  node_modules/.bin/knex seed:run transfers --env test
+  node_modules/.bin/knex migrate:latest transfers --env test
   ```
+
+* Por fim, execute o comando abaixo para criar as massas de dados, configuradas nos arquivos *seed*.
+  ```
+  node_modules/.bin/knex seed:run --env test
+  ```
+
+## <a id="testes"/> Execução dos testes: ❗
+
+* Na pasta raiz do projeto, execute o comando `npm test`, para executar toda a suíte de testes do projeto.
+
+* Dentro do projeto acesse: `coverage > Icov-report` e abra no navegador de sua preferência o arquivo `index.html` para visualizar a cobertura dos testes.
+
+* **OBS.** Caso as colunas de seu relatório estejam vazias, o problema pode ser resolvido instalando as dependências do **Handlers** a partir do comando `npm i -S handlebars@4.5.3`.
+
+---
 
 ## <a id="pacotes-utilizados"/> Pacotes utilizados: 📦 📚
 
@@ -163,3 +190,20 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
   * ### Instalação do Passport JWT ⚙️
 
     - Execute o comando `npm i -S -E passport-jwt@4.0.0` para instalar as dependências do **Passport JWT** no ambiente de desenvolvimento, na versão 4.0.0 sem atualização automática no futuro.
+  
+ * <a id="husky"/> [Husky](https://www.npmjs.com/package/husky) - Para realização de tarefas antes do commit, por exemplo: varredura do lint e execução dos testes.
+  
+   * ### Instalação do Husky ⚙️
+
+    - Execute o comando `npm i husky@7.0.4 --save-dev` para instalar as dependências do **Husky** no ambiente de desenvolvimento, na versão 7.0.4 sem atualização automática no futuro.
+
+    - Agora, execute os comandos abaixo os quais irão realizar as seguintes tarefas:
+      - Criar o script `prepare` no arquivo `package.json`
+      - Exeutar o script `prepare` para ativar o *hook* no *git*
+      - Criar o arquivo `pre-commit`, no qual serão gravadas pelo **Husky** as tarefas a serem realizadas antes do *commit*.
+        ```
+        npm set-script prepare "husky install" &&
+        npm run prepare &&
+        npx husky add .husky/pre-commit "npm run lint-check" &&
+        git add .husky/pre-commit
+        ```
