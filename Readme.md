@@ -12,6 +12,7 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
 - [Configuração do ambiente](#ambiente)
 - [Execução dos testes](#testes)
+- [Healthy Check da API](#healthy)
 
 - [Pacotes utilizados](#pacotes-utilizados)
 
@@ -50,16 +51,16 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 * Dentro do console do postgres execute o comando `CREATE DATABASE barriga;` para criar o banco do projeto, depois `exit` para sair do console.
 
 * Em seguida, execute o comando abaixo para criar as tabelas configuradas nos arquivos de migração.
-  ```
+  ```bash
   node_modules/.bin/knex migrate:latest transfers --env test
   ```
 
 * Por fim, execute o comando abaixo para criar as massas de dados, configuradas nos arquivos *seed*.
-  ```
+  ```bash
   node_modules/.bin/knex seed:run --env test
   ```
 
-## <a id="testes"/> Execução dos testes: ❗
+## <a id="testes"/> Execução dos testes: ▶️
 
 * Na pasta raiz do projeto, execute o comando `npm test`, para executar toda a suíte de testes do projeto.
 
@@ -67,7 +68,14 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
 
 * **OBS.** Caso as colunas de seu relatório estejam vazias, o problema pode ser resolvido instalando as dependências do **Handlers** a partir do comando `npm i -S handlebars@4.5.3`.
 
----
+
+## <a id="healthy"/> Healthy Check da API: ﮩ٨ـﮩﮩ٨ـ🫀ﮩ٨ـﮩﮩ٨ـ
+
+* Para visualizar o funcionamento da API, na pasta raiz do projeto execute o comando: `npm start`
+* Depois envie a requisição abaixo em um terminal ou no [Postman](https://www.postman.com) para conferir a disponibilidade da API
+  ```bash
+  curl --location 'http://localhost:3001'
+  ```
 
 ## <a id="pacotes-utilizados"/> Pacotes utilizados: 📦 📚
 
@@ -85,7 +93,7 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
     - Execute o comando `npm i -D jest@23.6.0 -E` para instalar no ambiente de DEV as dependências do **Jest** na versão 23.6.0 sem atualização automática no futuro.
 
     - Dentro do arquivo `package.json` altere o valor da chave `test` para `jest`.
-      ```bash
+      ```json
       "scripts": {
         "test": "jest",
         "lint": "eslint test/** src/** --fix"
@@ -96,7 +104,7 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
     Após a execução, serão exibidas várias opções para uma nova execução, para sair digite `q`.
   
     - Caso você esteja utilizando o **eslint** (recomendado), no arquivo `.eslintrc.json` dentro da chave `env` adicione a chave `"jest": true`, como no exemplo abaixo:
-      ```bash
+      ```json
         "env": {
           "commonjs": true,
           "es2021": true,
@@ -201,7 +209,7 @@ Projeto de uma API REST (seubarriga) desenvolvida utilizando a metdoldologia TDD
       - Criar o script `prepare` no arquivo `package.json`
       - Exeutar o script `prepare` para ativar o *hook* no *git*
       - Criar o arquivo `pre-commit`, no qual serão gravadas pelo **Husky** as tarefas a serem realizadas antes do *commit*.
-        ```
+        ```bash
         npm pkg set scripts.prepare="husky install" &&
         npm run prepare &&
         npx husky add .husky/pre-commit "npm run lint-check" &&
