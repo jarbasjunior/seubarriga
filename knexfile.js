@@ -1,12 +1,12 @@
 module.exports = {
   test: {
     client: 'pg',
-    version: '10.19',
+    version: '17.4',
     connection: {
       host: 'localhost',
-      port: 5430,
+      port: 5432,
       user: 'postgres',
-      password: 'postgres',
+      password: 'root',
       database: 'barriga',
     },
     migrations: { directory: 'src/migrations' },
@@ -14,12 +14,12 @@ module.exports = {
   },
   prod: {
     client: 'pg',
-    version: '10.19',
+    version: '17.4',
     connection: {
       host: 'localhost',
-      port: 5430,
+      port: 5432,
       user: 'postgres',
-      password: 'postgres',
+      password: 'root',
       database: 'seubarriga',
     },
     migrations: { directory: 'src/migrations' },
